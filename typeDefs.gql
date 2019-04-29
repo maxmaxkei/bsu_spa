@@ -1,0 +1,76 @@
+type User {
+  _id: ID
+  username: String! @unique
+  email: String!
+  password: String!
+  avatar: String
+  joinDate: String
+  favorites: [Course]
+}
+
+type Course {
+  _id: ID
+  title: String!
+  imageUrl: String!
+  categories: [String]!
+  description: String!
+  createdDate: String
+  likes: Int
+  createdBy: User!
+  messages: [Message]
+}
+
+type Message {
+  _id: ID
+  messageBody: String!
+  messageDate: String
+  messageUser: User!
+}
+
+type Token {
+  token: String!
+}
+
+type CoursesPage {
+  courses: [Course]
+  hasMore: Boolean
+}
+
+# Likes for Course / Favorites for User
+type LikesFaves {
+  likes: Int
+  favorites: [Course]
+}
+
+type Query {
+  getCurrentUser: User
+  getCourses: [Course]
+  getUserCourses(userId: ID!): [Course]
+  getCourse(courseId: ID!): Course!
+  searchCourses(searchTerm: String): [Course]
+  infiniteScrollCourses(pageNum: Int!, pageSize: Int!): CoursesPage
+}
+
+type Mutation {
+  addCourse(
+    title: String!
+    imageUrl: String!
+    categories: [String]!
+    description: String!
+    creatorId: ID!
+  ): Course!
+  updateUserCourse(
+    courseId: ID!
+    userId: ID!
+    title: String!
+    imageUrl: String!
+    categories: [String]!
+    description: String!
+  ): Course!
+  deleteUserCourse(courseId: ID!): Course!
+  addCourseMessage(messageBody: String!, userId: ID!, courseId: ID!): Message!
+  likeCourse(courseId: ID!, username: String!): LikesFaves!
+  unlikeCourse(courseId: ID!, username: String!): LikesFaves!
+  signinUser(username: String!, password: String!): Token
+  signupUser(username: String!, email: String!, password: String!): Token
+}
